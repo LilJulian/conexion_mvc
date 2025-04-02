@@ -13,7 +13,7 @@ class Categoria {
    * Metodo para obtener los registros de la base de datos
    * @returns {Array} Listado de la categorias en un arreglo
    */
-  async getAllCategorias() {
+  async getAll() {
     try {
       const [rows] = await connection.query("SELECT * FROM categorias");
       return rows;
@@ -21,7 +21,7 @@ class Categoria {
       throw new Error("Error al obtener las categorias")
     }
   }
-  async createCategorias() {
+  async create() {
     try {
       const [result] = await connection.query(`insert into categorias(nombre, descripcion) values 
       (?,?)`, [this.nombre, this.descripcion])
@@ -31,7 +31,7 @@ class Categoria {
         descricion: this.descripcion
       }
     } catch (error) {
-      throw new Error("Error al insertar categoria ")
+      throw new Error("Error al insertar categoria ");
     }
 
   }
