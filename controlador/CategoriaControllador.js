@@ -1,6 +1,4 @@
 import Categoria from "../modelos/Categoria.js";
-import connection from "../utils/db.js";
-
 
 class CategoriaControlador {
   static getAllCatgeorias = async (req, res) => {
@@ -35,6 +33,16 @@ class CategoriaControlador {
       const objeto = req.body;
       const OBJCategoria = new Categoria();
       const categoria = await OBJCategoria.updatePatch(objeto, id)
+      res.status(201).json(categoria)
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  static deleteCategoria = async (req, res) => {
+    try {
+      const {id} = req.params;
+      const OBJCategoria = new Categoria();
+      const categoria = await OBJCategoria.delete(id);
       res.status(201).json(categoria)
     } catch (error) {
       res.status(500).json({ error: error.message });

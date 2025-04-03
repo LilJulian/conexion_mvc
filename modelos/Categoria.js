@@ -16,8 +16,8 @@ class Categoria {
    */
   async getAll() {
     try {
-      const [rows] = await connection.query("SELECT * FROM categorias");
-      return rows;
+      const [result] = await connection.query("SELECT * FROM categorias");
+      return result;
     } catch (error) {
       throw new Error("Error al obtener las categorias")
     }
@@ -47,29 +47,24 @@ class Categoria {
     }
   }
   async updatePatch(objeto, id) {
-    this.metodo(objeto, id)
-    const [rows] = await connection.query("SELECT * FROM categorias where id = ?", [id]);
-    // if (result.affectedRows === 0) {
-    //   throw new Error("Categoria no encontrada");
-    // }
-    return rows[0];
-  }
-  // noRepetir = async (consulta, customError) => {
-  //   try {
-  //     const [rows] = await connection.query(consulta)
-  //     return rows;
-  //   } catch (error) {
-  //     throw new Error(customError)
-  //   }
-  // }
-  metodo = async (objeto, id) => {
     try {
-      for (const key in objeto) {
-        // console.log(objeto[key]);
-        await connection.query(`update categorias set ${key} = '${objeto[key]}' where id = ${id}`);
-      }
+      const claves = Object.keys(objeto);
+      const recClaves = claves.map(clave => `${clave} = ?`).join(", ");
+      const valores = claves.map(clave => objeto[clave]);
+      await connection.query(`update categorias set ${recClaves} where id = ?`, [...valores, id]);
+      const [rows] = await connection.query("select * from categorias where id = ?", [id]);
+      return rows;
+
     } catch (error) {
       throw new Error("Error al actualizar la categoria");
+    }
+  }
+  async delete(id){
+    try {
+      const [result] = await connection.query(`delete from categorias where id = ?`, [id]);
+      return result;
+    } catch (error) {
+      throw new Error("Error al eliminar categoria")
     }
   }
 }

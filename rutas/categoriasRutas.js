@@ -14,6 +14,8 @@ ruta.put('/:id', CategoriaControlador.actualizarCategoria)
 
 ruta.patch('/:id', CategoriaControlador.actualizarParcialCategoria)
 
+ruta.delete('/:id', CategoriaControlador.deleteCategoria)
+
 
 
 export default ruta;
