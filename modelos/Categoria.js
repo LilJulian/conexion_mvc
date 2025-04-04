@@ -61,8 +61,13 @@ class Categoria {
   }
   async delete(id){
     try {
-      const [result] = await connection.query(`delete from categorias where id = ?`, [id]);
-      return result;
+      const [validar] = await connection.query("select count(*) as totalProductos from productos where categoria_id = ?",[id]);
+      if (validar[0].totalProductos > 0) {
+        return {message: "La categoria tiene productos asociados, no se puede eliminar"}
+      } else {
+        const [result] = await connection.query(`delete from categorias where id = ?`, [id]);
+        return result;        
+      }
     } catch (error) {
       throw new Error("Error al eliminar categoria")
     }
