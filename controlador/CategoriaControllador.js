@@ -40,9 +40,19 @@ class CategoriaControlador {
   }
   static deleteCategoria = async (req, res) => {
     try {
-      const {id} = req.params;
+      const { id } = req.params;
       const OBJCategoria = new Categoria();
       const categoria = await OBJCategoria.delete(id);
+      res.status(201).json(categoria)
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  static obtenerCategoriaProducto = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const OBJCategoria = new Categoria();
+      const categoria = await OBJCategoria.getbyCategoria(id);
       res.status(201).json(categoria)
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -16,8 +16,17 @@ class Categoria {
    */
   async getAll() {
     try {
-      const [result] = await connection.query("SELECT * FROM categorias");
-      return result;
+      const result = await connection.query("SELECT * FROM categorias");
+      const productosCategoria = Promise.all(result.map(async (categoria) => {
+        const [productos] = await connection.query(`select * from productos where categoria_id = ?`, [categoria.id])
+        return {
+          ...categoria,
+          productos
+        }
+      }
+      ));
+      return productosCategoria;
+
     } catch (error) {
       throw new Error("Error al obtener las categorias")
     }
@@ -59,17 +68,34 @@ class Categoria {
       throw new Error("Error al actualizar la categoria");
     }
   }
-  async delete(id){
+  async delete(id) {
     try {
-      const [validar] = await connection.query("select count(*) as totalProductos from productos where categoria_id = ?",[id]);
+      const [validar] = await connection.query("select count(*) as totalProductos from productos where categoria_id = ?", [id]);
       if (validar[0].totalProductos > 0) {
-        return {message: "La categoria tiene productos asociados, no se puede eliminar"}
+        return { message: "La categoria tiene productos asociados, no se puede eliminar" }
       } else {
         const [result] = await connection.query(`delete from categorias where id = ?`, [id]);
-        return result;        
+        return result;
       }
     } catch (error) {
-      throw new Error("Error al eliminar categoria")
+      throw new Error("Error al eliminar categoria");
+    }
+  }
+  async getbyCategoria(id) {
+    try {
+      const [traer] = await connection.query('select * from categorias where id = ?', [id]);
+      const productosCategoria = Promise.all(traer.map(async (categoria) => {
+        const [productos] = await connection.query(`select * from productos where categoria_id = ?`, [categoria.id])
+
+        return {
+          ...categoria,
+          productos
+        }
+      }
+      ));
+      return productosCategoria;
+    } catch (error) {
+      throw new Error("Error al obtener la categoria categoria");
     }
   }
 }
